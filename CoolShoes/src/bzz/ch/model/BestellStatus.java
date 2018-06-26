@@ -1,3 +1,4 @@
+package bzz.ch.model;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 

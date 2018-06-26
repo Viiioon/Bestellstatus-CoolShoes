@@ -1,3 +1,4 @@
+package ch.bzz.datenbank;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,7 +32,7 @@ public class DBTest {
 			// Datensatz umd Datensatz abarbeiten
 			while (rs.next()) {
 				for (int i = 1; i <= column; i++) // Beginnt mit Position 1 !!!
-					System.out.print(rs.getString(i)); // hier erfolgt die Verarbeitung der Daten
+					System.out.print(rs.getString(i) + " "); // hier erfolgt die Verarbeitung der Daten
 			}
 			rs.close(); // nach Gebrauch sind des ResultSet...
 			stmt.close(); // ...und das Statement zu schliessen.

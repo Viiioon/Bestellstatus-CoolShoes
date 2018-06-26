@@ -1,3 +1,4 @@
+package bzz.ch.model;
 import java.util.Date;
 
 public class Bestellung {

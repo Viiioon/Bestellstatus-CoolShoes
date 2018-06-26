@@ -1,7 +1,7 @@
+package bzz.ch.model;
 
 public class Mitarbeiter {
 	
-	private Berechtigung berechtigung;
 	private Bestellung bestellung;
 	private String MAName;
 	private String MAVorname;
@@ -10,7 +10,7 @@ public class Mitarbeiter {
 		
 	}
 	
-	public void statusAendern(Berechtigung berechtigung, Bestellung bestellung) {
+	public void statusAendern(Bestellung bestellung) {
 		
 	}
 	

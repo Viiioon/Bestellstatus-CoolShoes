@@ -1,3 +1,4 @@
+package bzz.ch.model;
 
 public class Kunde {
 	
