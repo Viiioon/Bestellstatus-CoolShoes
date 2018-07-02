@@ -1,11 +1,12 @@
-package ch.bzz.datenbank;
+package bzz.ch.datenbank;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DBTest {
+public class DBConnection {
 
 	private String path = "CoolShoes.accdb";
 	private Connection conn;
@@ -24,18 +25,15 @@ public class DBTest {
 
 	public void read() {
 		try {
-			// Eine Abfrage an die Datenbank richten
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM Mitarbeiter;");
-			// die Anzahl der Einträge des Datensatzes lesen
 			int column = rs.getMetaData().getColumnCount();
-			// Datensatz umd Datensatz abarbeiten
 			while (rs.next()) {
-				for (int i = 1; i <= column; i++) // Beginnt mit Position 1 !!!
-					System.out.print(rs.getString(i) + " "); // hier erfolgt die Verarbeitung der Daten
+				for (int i = 1; i <= column; i++)
+					System.out.print(rs.getString(i) + " ");
 			}
-			rs.close(); // nach Gebrauch sind des ResultSet...
-			stmt.close(); // ...und das Statement zu schliessen.
+			rs.close();
+			stmt.close();
 		} catch (SQLException err) {
 			System.out.println("ungültiger SQL-Befehl");
 		}
@@ -43,20 +41,24 @@ public class DBTest {
 
 	public void write() {
 		try {
-			// Einen insert an die Datenbank richten
 			Statement stmt = conn.createStatement();
 			stmt.execute("INSERT INTO Kunde (…, …, …) VALUES ('…', …, '…');");
 			stmt.close();
 		} catch (SQLException err) {
 			System.out.println("ungültiger SQL-Befehl");
 		}
-
+	}
+	
+	public Connection getConnection() {
+		if(conn == null) {
+			connect();
+		}
+		return conn;
 	}
 
 	public static void main(String[] args) {
-		DBTest dbt = new DBTest();
+		DBConnection dbt = new DBConnection();
 		dbt.connect();
 		dbt.read();
-
 	}
 }
