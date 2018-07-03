@@ -23,16 +23,16 @@ public class StatusController extends Observable {
 	public MitarbeiterDao mitarbeiterDAO;
 	public Mitarbeiter ma;
 	public BestellStatus bs;
-	
+
 	public StatusController() {
 		bestellungDao = new BestellungDao();
 		mitarbeiterDAO = new MitarbeiterDao();
 	}
-	
+
 	/**
 	 * @param bestellung
 	 * @param status
-	 * Diese Methode verändert den Status
+	 *            Diese Methode verändert den Status
 	 */
 	public void updateStatus(Bestellung b, String status) {
 		b.setBearbeitungsDatum(new Date(new java.util.Date().getTime()));
@@ -42,46 +42,44 @@ public class StatusController extends Observable {
 		setChanged();
 		notifyObservers();
 	}
-	
+
 	/**
 	 * @param bestellung
 	 * @param status
 	 * @param geplanteLieferung
-	 * Diese Methode verändert den Status
+	 *            Diese Methode verändert den Status
 	 */
 	public void updateStatus(Bestellung bestellung, String status, Date geplanteLieferung) {
 		Bestellung teilBestellung1 = bestellung;
-		teilBestellung1.setBearbeitungsDatum(new Date(new java.util.Date().getTime()));
-		teilBestellung1.setBestellNummer(bs.generiereBestellungsNummer(bestellung.getBestellNr()));
-		teilBestellung1.setMitarbeiter(ma);
 		teilBestellung1.setStatus("Auftrag aufbereiten");
-		
-		Bestellung teilBestellung2 = new Bestellung(0, 
-				bs.generiereBestellungsNummer(teilBestellung1.getBestellNr()), 
-				status, new Date(new java.util.Date().getTime()), 
-				geplanteLieferung, ma, bestellung.getKunde());
-		
+		teilBestellung1.setBestellNummer(bs.generiereBestellungsNummer(bestellung.getBestellNr()));
+		teilBestellung1.setBearbeitungsDatum(new Date(new java.util.Date().getTime()));
+		teilBestellung1.setMitarbeiter(ma);
+
+		Bestellung teilBestellung2 = new Bestellung(0, bs.generiereBestellungsNummer(teilBestellung1.getBestellNr()),
+				status, new Date(new java.util.Date().getTime()), geplanteLieferung, ma, bestellung.getKunde());
+
 		bestellungDao.insert(teilBestellung1, teilBestellung2);
 		setChanged();
 		notifyObservers();
 	}
-	
-	 /**
+
+	/**
 	 * @return mitarbeiter
 	 */
 	public Mitarbeiter getMitarbeiter() {
-		 return ma;
-	 }
-	 
-	 /**
+		return ma;
+	}
+
+	/**
 	 * @param mitarbeiter
-	 * set Mitarbeiter
+	 *            set Mitarbeiter
 	 */
 	public void setMitarbeiter(Mitarbeiter mitarbeiter) {
-		 this.ma = mitarbeiter;
-	 }
-	 
-	 public static void main(String[] args) {
+		this.ma = mitarbeiter;
+	}
+
+	public static void main(String[] args) {
 		new GUI(new StatusController());
 	}
 }

@@ -46,7 +46,7 @@ public class GUI extends JFrame implements Observer {
 	public GUI(StatusController statusController) {
 		this.statusController = statusController;
 		statusController.addObserver(this);
-		bestellungsTabelle = new JPanel(new GridLayout(0, 10));
+		bestellungsTabelle = new JPanel(new GridLayout(0, 15));
 		init();
 	}
 
@@ -108,21 +108,6 @@ public class GUI extends JFrame implements Observer {
 			resultat.addItem("Auftrag geliefert");
 			break;
 		}
-//		resultat.addItemListener(e -> {
-//			if (e.getStateChange() == ItemEvent.SELECTED) {
-//				if (((String) e.getItemSelectable().getSelectedObjects()[0]).equals("Teilauftrag verspätet")) {
-//					String date = ((String) JOptionPane.showInputDialog(this, "Geplantes Lieferdatum: \n(YYYY-MM-DD)",
-//							"Lieferungsdatum", JOptionPane.PLAIN_MESSAGE, null, null, null)).trim();
-//					if (date != null && date.matches("[0-9][0-9][0-9][0-9]-(0|1)[0-9]-[0-3][0-9]")) {
-//						statusController.updateStatus(bestellung,
-//								(String) e.getItemSelectable().getSelectedObjects()[0],
-//								Date.valueOf(LocalDate.parse(date)));
-//					}
-//				} else {
-//					statusController.updateStatus(bestellung, (String) e.getItemSelectable().getSelectedObjects()[0]);
-//				}
-//			}
-//		});
 		return resultat;
 	}
 
@@ -132,16 +117,16 @@ public class GUI extends JFrame implements Observer {
 	public void resetBestellungsTabelle() {
 		this.remove(bestellungsTabelle);
 		bestellungsTabelle.removeAll();
-		bestellungsTabelle.add(new JLabel("BestellNummer"));
-		bestellungsTabelle.add(new JLabel("Kunde"));
 		bestellungsTabelle.add(new JLabel("Status"));
-		bestellungsTabelle.add(new JLabel("Lieferung geplant"));
 		bestellungsTabelle.add(new JLabel("Bestellungsverlauf"));
+		bestellungsTabelle.add(new JLabel("BestellNummer"));
+		bestellungsTabelle.add(new JLabel("Lieferung geplant"));
+		bestellungsTabelle.add(new JLabel("Kunde"));
 
 		Collection<Bestellung> bestellungen = BestellungDao.getActive();
 		for (Bestellung bestellung : bestellungen) {
-			bestellungsTabelle.add(new JLabel(bestellung.getBestellNr()));
 			bestellungsTabelle.add(new JLabel(bestellung.getKunde().getVorname() + bestellung.getKunde().getName()));
+			bestellungsTabelle.add(new JLabel(bestellung.getBestellNr()));
 			JComboBox<String> comboBox = generiereStatus(bestellung);
 			bestellungsTabelle.add(comboBox);
 			if (bestellung.getLieferungGeplant() != null) {
@@ -171,10 +156,6 @@ public class GUI extends JFrame implements Observer {
 		for (Bestellung bestellung1 : BestellungDao.getHistory(bestellung.getBestellNr())) {
 			bestellungsVerlaufCollection.add(bestellung1.kreiereBestellungsverlaufArray());
 		}
-		String[] rowNames = { "BestellNr", "Status", "Kunde", "Mitarbeiter", "Bearbeitungsdatum",
-				"Geplantes Lieferdatum" };
-		JTable tabelle = new JTable(bestellungsVerlaufCollection.toArray(new Object[0][]), rowNames);
-		meinDialog.add(new JScrollPane(tabelle));
 		meinDialog.setSize(500, 300);
 		meinDialog.setVisible(true);
 	}
