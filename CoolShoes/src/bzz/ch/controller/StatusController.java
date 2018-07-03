@@ -1,64 +1,84 @@
+/*
+ * @author Vion Hasaj, Dominic Wyss, Lisi Useini
+ * @version 1.0
+ */
+
 package bzz.ch.controller;
 
 import java.sql.Date;
 import java.util.Observable;
 
 import bzz.ch.view.*;
+import bzz.ch.model.BestellStatus;
 import bzz.ch.model.Bestellung;
 import bzz.ch.model.Mitarbeiter;
 
+/**
+ * @author User
+ *
+ */
 public class StatusController extends Observable {
 
-	public BestellDao bestellDAO;
+	public BestellungDao bestellungDao;
 	public MitarbeiterDao mitarbeiterDAO;
-	public Mitarbeiter mitarbeiter;
+	public Mitarbeiter ma;
+	public BestellStatus bs;
 	
 	public StatusController() {
-		bestellDAO = new BestellDao();
+		bestellungDao = new BestellungDao();
 		mitarbeiterDAO = new MitarbeiterDao();
 	}
 	
+	/**
+	 * @param bestellung
+	 * @param status
+	 * Diese Methode verändert den Status
+	 */
 	public void updateStatus(Bestellung b, String status) {
 		b.setBearbeitungsDatum(new Date(new java.util.Date().getTime()));
 		b.setStatus(status);
-		b.setMitarbeiter(mitarbeiter);
-		bestellDAO.insert(b);
+		b.setMitarbeiter(ma);
+		bestellungDao.insert(b);
 		setChanged();
 		notifyObservers();
 	}
 	
-	public void updateStatus(Bestellung b, String status, Date lieferungGeplant) {
-		Bestellung teilBestellungA = b;
-		teilBestellungA.setBearbeitungsDatum(new Date(new java.util.Date().getTime()));
-		teilBestellungA.setBestellNr(generateBestellNr(b.getBestellNr()));
-		teilBestellungA.setMitarbeiter(mitarbeiter);
-		teilBestellungA.setStatus("Auftrag aufbereiten");
+	/**
+	 * @param bestellung
+	 * @param status
+	 * @param geplanteLieferung
+	 * Diese Methode verändert den Status
+	 */
+	public void updateStatus(Bestellung bestellung, String status, Date geplanteLieferung) {
+		Bestellung teilBestellung1 = bestellung;
+		teilBestellung1.setBearbeitungsDatum(new Date(new java.util.Date().getTime()));
+		teilBestellung1.setBestellNummer(bs.generiereBestellungsNummer(bestellung.getBestellNr()));
+		teilBestellung1.setMitarbeiter(ma);
+		teilBestellung1.setStatus("Auftrag aufbereiten");
 		
-		Bestellung teilBestellungB = new Bestellung(0, 
-				generateBestellNr(teilBestellungA.getBestellNr()), 
+		Bestellung teilBestellung2 = new Bestellung(0, 
+				bs.generiereBestellungsNummer(teilBestellung1.getBestellNr()), 
 				status, new Date(new java.util.Date().getTime()), 
-				lieferungGeplant, mitarbeiter, b.getKunde());
+				geplanteLieferung, ma, bestellung.getKunde());
 		
-		bestellDAO.insert(teilBestellungA, teilBestellungB);
+		bestellungDao.insert(teilBestellung1, teilBestellung2);
 		setChanged();
 		notifyObservers();
 	}
 	
-	public String generateBestellNr(String bestellNr) {
-		if(bestellNr.charAt(bestellNr.length()-1) >= 'A') {
-			return bestellNr.substring(0, bestellNr.length()-1) + ((char)(bestellNr.charAt(bestellNr.length()-1)+1));
-		} else {
-			return bestellNr + 'A';
-		}
-	}
-	
-	 public Mitarbeiter getMitarbeiter() {
-		 return mitarbeiter;
+	 /**
+	 * @return mitarbeiter
+	 */
+	public Mitarbeiter getMitarbeiter() {
+		 return ma;
 	 }
 	 
-	 public void setMitarbeiter(Mitarbeiter mitarbeiter) {
-		 System.out.println(mitarbeiter.getVorname());
-		 this.mitarbeiter = mitarbeiter;
+	 /**
+	 * @param mitarbeiter
+	 * set Mitarbeiter
+	 */
+	public void setMitarbeiter(Mitarbeiter mitarbeiter) {
+		 this.ma = mitarbeiter;
 	 }
 	 
 	 public static void main(String[] args) {
